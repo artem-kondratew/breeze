@@ -43,7 +43,7 @@ public:
     Serial* operator=( Serial&& other) = delete;
 
 private:
-    static uint8_t crc8(const uint8_t* data, uint64_t size);
+    static uint8_t crc8(const uint8_t* pocket, size_t size);
     static void setChecksumForSend(Msg* msg);
     static bool checkChecksumFromReceive(uint8_t buffer[], size_t size);
 
