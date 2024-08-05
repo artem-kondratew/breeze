@@ -1,11 +1,10 @@
 import ctypes
-import time
 
 
 class Commander:
 
     ptr = ctypes.POINTER(ctypes.c_char)
-    lib = ctypes.CDLL("build/libcommander.so")
+    lib = ctypes.CDLL("/usr/local/lib/libcommander.so")
 
     lib.createCommander.argtypes = []
     lib.createCommander.restype = ptr
@@ -77,7 +76,7 @@ class Commander:
 
 
 if __name__ == '__main__':
-    commander = Commander('/dev/ttyUSB0', 9600, 3, 1)
+    commander = Commander('/dev/ttyACM0', 9600, 3, 1)
 
     if commander.connectSerial():
         print('ok')
