@@ -1,5 +1,5 @@
-#ifndef COMMANDS_H
-#define COMMANDS_H
+#ifndef MODE_H
+#define MODE_H
 
 
 #include "motor.h"
@@ -9,8 +9,6 @@
 #define HALF_POWER_MODE 1
 
 #define MODES_NUM 2
-
-#define VERBOSE true
 
 
 // max_rev ------ h_bound_rev ++++++ l_bound_rev ------ zero ------ l_bound ++++++ h_bound ------ max
@@ -51,32 +49,8 @@ void Mode::init() {
 
 
 void Mode::set_mode(uint8_t idx) {
-    
-// only for console test
-    if (idx == 40) {
-        idx = 0;
-    }
-    if (idx == 41) {
-        idx = 1;
-    }
-// end only for console test
-
     Motor::set_bounds(modes_[idx].bounds_);
-#if VERBOSE
-    Serial.print("set mode ");
-    Serial.print(idx);
-    Serial.print(" with bounds: [");
-    Serial.print(modes_[idx].bounds_[0]);
-    Serial.print(", ");
-    Serial.print(modes_[idx].bounds_[1]);
-    Serial.print("] [");
-    Serial.print(modes_[idx].bounds_[2]);
-    Serial.print(", ");
-    Serial.print(modes_[idx].bounds_[3]);
-    Serial.print("]");
-    Serial.println("");
-#endif
 }
 
 
-#endif // COMMANDS_H
+#endif // MODE_H
