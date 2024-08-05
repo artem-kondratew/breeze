@@ -5,7 +5,7 @@
 #include "gui/window.hpp"
 
 
-#define PORT "/dev/ttyUSB0"
+#define PORT "/dev/ttyACM0"
 #define BAUDRATE 9600
 #define CMD_SIZE 3
 #define MSG_SIZE 1
