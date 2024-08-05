@@ -32,3 +32,7 @@ add_executable(breeze "${SOURCE}" "${SERIAL_SOURCE}")
 add_library(commander SHARED "${SERIAL_SOURCE}")
 
 target_link_libraries(breeze "${LIBRARY}")
+
+install(TARGETS commander DESTINATION lib)
+
+
