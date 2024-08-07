@@ -31,10 +31,9 @@ private:
     int16_t max_vel_rev_;
 
     uint8_t data_pin_;
-    uint8_t esc_power_pin_;
     
 public:
-    Motor(uint8_t id, uint16_t min_ppm, uint16_t max_ppm, uint16_t reverse_ppm, uint16_t min_vel, uint16_t min_vel_rev, uint8_t data_pin, uint8_t esc_power_pin);
+    Motor(uint8_t id, uint16_t min_ppm, uint16_t max_ppm, uint16_t reverse_ppm, uint16_t min_vel, uint16_t min_vel_rev, uint8_t data_pin);
 
     static void init();
 
@@ -53,7 +52,8 @@ public:
 
     uint16_t EMA();
 
-    void change_ppm();
+    void calc_ppm();
+    void write_ppm();
     void set_ppm(int16_t ppm);
     void set_velocity(int16_t vel);
     void set_velocity_percents(int8_t percent);
@@ -71,16 +71,15 @@ uint64_t t;
 
 
 Motor::Motor(uint8_t id, uint16_t min_ppm, uint16_t max_ppm, uint16_t reverse_ppm,
-             uint16_t min_vel, uint16_t min_vel_rev, uint8_t data_pin, uint8_t esc_power_pin) : id_{id},
-                                                                                                min_ppm_{min_ppm},
-                                                                                                max_ppm_{max_ppm},
-                                                                                                reverse_ppm_{reverse_ppm},
-                                                                                                ppm_{reverse_ppm},
-                                                                                                target_ppm_{reverse_ppm},
-                                                                                                min_vel_{min_vel},
-                                                                                                min_vel_rev_{min_vel_rev},
-                                                                                                data_pin_{data_pin},
-                                                                                                esc_power_pin_{esc_power_pin} {
+             uint16_t min_vel, uint16_t min_vel_rev, uint8_t data_pin) : id_{id},
+                                                                         min_ppm_{min_ppm},
+                                                                         max_ppm_{max_ppm},
+                                                                         reverse_ppm_{reverse_ppm},
+                                                                         ppm_{reverse_ppm},
+                                                                         target_ppm_{reverse_ppm},
+                                                                         min_vel_{min_vel},
+                                                                         min_vel_rev_{min_vel_rev},
+                                                                         data_pin_{data_pin} {
     max_vel_ = max_ppm_ - reverse_ppm_ - min_vel;
     max_vel_rev_ = min_ppm_ - reverse_ppm_ - min_vel_rev_;
     allow_EMA_ = true;
@@ -167,7 +166,7 @@ uint16_t Motor::EMA() {
 }
 
 
-void Motor::change_ppm() {
+void Motor::calc_ppm() {
     if (!allow_EMA_) {
         return;
     }
@@ -179,12 +178,15 @@ void Motor::change_ppm() {
         return;
     }
     
-    ppm_ = EMA();
-    // ppm_ = target_ppm_;
-    
-    esc_.writeMicroseconds(ppm_);
+    // ppm_ = EMA();
+    ppm_ = target_ppm_;
 
     t = new_t;
+}
+
+
+void Motor::write_ppm() {
+    esc_.writeMicroseconds(ppm_);
 }
 
 
@@ -232,8 +234,10 @@ void Motor::set_bounds(int8_t* bounds) {
 
 
 void Motor::spin() {
-    motor0->change_ppm();
-    motor1->change_ppm();
+    motor0->calc_ppm();
+    motor1->calc_ppm();
+    motor0->write_ppm();
+    motor1->write_ppm();
 }
 
 
