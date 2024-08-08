@@ -24,15 +24,9 @@ set(SERIAL_SOURCE
 src/serial/commander.cpp
 src/serial/msg.cpp
 src/serial/serial.cpp
-src/serial/commander_python_wrapper.cpp
+src/serial/socket.cpp
 )
 
 add_executable(breeze "${SOURCE}" "${SERIAL_SOURCE}")
 
-add_library(commander SHARED "${SERIAL_SOURCE}")
-
 target_link_libraries(breeze "${LIBRARY}")
-
-install(TARGETS commander DESTINATION lib)
-
-

@@ -13,8 +13,6 @@
 #include "msg.hpp"
 
 
-inline uint8_t i = 0;
-
 class Serial {
 private:
     static const size_t TIMER_ = 1000;
@@ -40,7 +38,7 @@ public:
     Serial(Serial&& other) = delete;
 
     Serial* operator=(const Serial& other) = delete;
-    Serial* operator=( Serial&& other) = delete;
+    Serial* operator=(Serial&& other) = delete;
 
 private:
     static uint8_t crc8(const uint8_t* pocket, size_t size);

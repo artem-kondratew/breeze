@@ -6,15 +6,10 @@
 
 
 class Commander {
-private:
-    Serial* serial_;
-    size_t data_size_;
-
 public:
     static const int8_t MIN_VEL = -100;
     static const int8_t MAX_VEL = +100;
 
-private:
     static const uint8_t LED_ON = 1;
     static const uint8_t LED_OFF = 2;
     static const uint8_t SET_MIN_PPM = 3;
@@ -23,6 +18,10 @@ private:
     static const uint8_t ALLOW_EMA = 6;
     static const uint8_t SET_VELOCITIES = 7;
     static const uint8_t INIT_MOTORS = 8;
+
+private:
+    Serial* serial_;
+    size_t data_size_;
 
 public:
     Commander() = default;
@@ -46,6 +45,8 @@ public:
     void set_velocities(int8_t vel0, int8_t vel1);
 
     void init_motors();
+
+    void parse(uint8_t command, int8_t v0, int8_t v1);
 };
 
 

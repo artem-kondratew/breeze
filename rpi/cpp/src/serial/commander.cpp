@@ -109,3 +109,31 @@ void Commander::init_motors() {
     Msg msg(data_size_, {INIT_MOTORS, 0, 0});
     serial_->send(&msg);
 }
+
+
+void Commander::parse(uint8_t command, int8_t v0, int8_t v1) {
+    if (command == SET_VELOCITIES) {
+        return set_velocities(v0, v1);
+    }
+    if (command == LED_ON) {
+        return led_on();
+    }
+    if (command == LED_OFF) {
+        return led_off();
+    }
+    if (command == SET_MIN_PPM) {
+        return set_min_ppm();
+    }
+    if (command == SET_REVERSE_PPM) {
+        return set_reverse_ppm();
+    }
+    if (command == SET_MAX_PPM) {
+        return set_max_ppm();
+    }
+    if (command == ALLOW_EMA) {
+        return allow_ema();
+    }
+    if (command == INIT_MOTORS) {
+        return init_motors();
+    }
+}
