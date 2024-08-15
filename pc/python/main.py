@@ -4,7 +4,7 @@ from udp_socket import Socket
 
 
 LOCALHOST = '127.0.0.1'
-IP = None
+IP = '192.168.1.103'
 
 SERIAL_PORT =  5005
 SERIAL_DATA_SIZE = 5
@@ -20,7 +20,7 @@ MOTOR_INIT_BUTTON = 4
 
 
 def main():
-    serial_socket = Socket(LOCALHOST, SERIAL_PORT, SERIAL_DATA_SIZE)
+    serial_socket = Socket(IP, SERIAL_PORT, SERIAL_DATA_SIZE)
     serial_socket.disableVerbose()
 
     joystick = Joystick(LINEAR_AXIS, INVERT_LINEAR_AXIS, ANGULAR_AXIS, INVERT_ANGULAR_AXIS,
