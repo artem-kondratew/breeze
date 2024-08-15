@@ -8,8 +8,8 @@ class Parser:
 
     LED_ON = 1
     LED_OFF = 2
-    SET_VELOCITIES = 7
-    INIT_MOTORS = 8
+    SET_VELOCITIES = 3
+    INIT_MOTORS = 4
 
     def __init__(self, socket : Socket) -> None:
         self.socket = socket

@@ -48,30 +48,6 @@ void Commander::led_off() {
 }
 
 
-void Commander::set_min_ppm() {
-    Msg msg(data_size_, {SET_MIN_PPM, 0, 0});
-    serial_->send(&msg);
-}
-
-
-void Commander::set_reverse_ppm() {
-    Msg msg(data_size_, {SET_REVERSE_PPM, 0, 0});
-    serial_->send(&msg);
-}
-
-
-void Commander::set_max_ppm() {
-    Msg msg(data_size_, {SET_MAX_PPM, 0, 0});
-    serial_->send(&msg);
-}
-
-
-void Commander::allow_ema() {
-    Msg msg(data_size_, {ALLOW_EMA, 0, 0});
-    serial_->send(&msg);
-}
-
-
 template <typename T>
 T constrain(T data, T min, T max) {
     data = data > max ? max : data;
@@ -120,18 +96,6 @@ void Commander::parse(uint8_t command, int8_t v0, int8_t v1) {
     }
     if (command == LED_OFF) {
         return led_off();
-    }
-    if (command == SET_MIN_PPM) {
-        return set_min_ppm();
-    }
-    if (command == SET_REVERSE_PPM) {
-        return set_reverse_ppm();
-    }
-    if (command == SET_MAX_PPM) {
-        return set_max_ppm();
-    }
-    if (command == ALLOW_EMA) {
-        return allow_ema();
     }
     if (command == INIT_MOTORS) {
         return init_motors();

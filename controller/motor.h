@@ -11,7 +11,6 @@
 class Motor {
 private:
     uint8_t id_;
-    bool allow_EMA_;
 public:
     bool initialized_;
 
@@ -31,16 +30,13 @@ private:
     int16_t max_vel_rev_;
 
     uint8_t data_pin_;
+
+    uint64_t t_;
     
 public:
     Motor(uint8_t id, uint16_t min_ppm, uint16_t max_ppm, uint16_t reverse_ppm, uint16_t min_vel, uint16_t min_vel_rev, uint8_t data_pin);
 
     static void init();
-
-    void enableEMA();
-    void disableEMA();
-    static void enableEMAs();
-    static void disableEMAs();
 
     void set_min_ppm();
     void set_reverse_ppm();
@@ -67,7 +63,6 @@ public:
 Motor* motor0;
 Motor* motor1;
 int8_t* percent_bounds_;
-uint64_t t;
 
 
 Motor::Motor(uint8_t id, uint16_t min_ppm, uint16_t max_ppm, uint16_t reverse_ppm,
@@ -82,7 +77,6 @@ Motor::Motor(uint8_t id, uint16_t min_ppm, uint16_t max_ppm, uint16_t reverse_pp
                                                                          data_pin_{data_pin} {
     max_vel_ = max_ppm_ - reverse_ppm_ - min_vel;
     max_vel_rev_ = min_ppm_ - reverse_ppm_ - min_vel_rev_;
-    allow_EMA_ = true;
     initialized_ = false;
     initialized_ = false;
 }
@@ -97,28 +91,6 @@ void Motor::init() {
     delay(2400);
     set_reverse_ppms();
     delay(1000);
-}
-
-
-void Motor::enableEMA() {
-    allow_EMA_ = true;
-}
-
-
-void Motor::disableEMA() {
-    allow_EMA_ = false;
-}
-
-
-void Motor::enableEMAs() {
-    motor0->enableEMA();
-    motor1->enableEMA();
-}
-
-
-void Motor::disableEMAs() {
-    motor0->disableEMA();
-    motor1->disableEMA();
 }
 
 
@@ -166,13 +138,9 @@ uint16_t Motor::EMA() {
 }
 
 
-void Motor::calc_ppm() {
-    if (!allow_EMA_) {
-        return;
-    }
-    
+void Motor::calc_ppm() {    
     uint64_t new_t = millis();
-    uint64_t dt = new_t - t;
+    uint64_t dt = new_t - t_;
     
     if (dt < 10) {
         return;
@@ -181,7 +149,7 @@ void Motor::calc_ppm() {
     // ppm_ = EMA();
     ppm_ = target_ppm_;
 
-    t = new_t;
+    t_ = new_t;
 }
 
 
@@ -211,11 +179,7 @@ void Motor::set_velocity(int16_t vel) {
 }
 
 
-void Motor::set_velocity_percents(int8_t percent) {
-    if (!allow_EMA_) {
-        return;
-    }
-    
+void Motor::set_velocity_percents(int8_t percent) {    
     percent = percent < 0 ? constrain(percent, percent_bounds_[0], percent_bounds_[1]) : constrain(percent, percent_bounds_[2], percent_bounds_[3]);
     int16_t vel = max_vel_ * (percent / 100.0);
     set_velocity(vel);

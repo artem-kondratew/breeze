@@ -44,8 +44,8 @@ void setup() {
     
     digitalWrite(LED_BUILTIN, LOW);
     
-    serial::init(CMD_SIZE, MSG_SIZE, Parser::callback);
-    serial::connect();
+    //serial::init(CMD_SIZE, MSG_SIZE, Parser::callback);
+    //serial::connect();
     
     motor0 = new Motor(0, MOTOR_0_MIN_PPM, MOTOR_0_MAX_PPM, MOTOR_0_REVERSE_PPM, MOTOR_0_MIN_VEL, MOTOR_0_MIN_VEL_REV, MOTOR_0_DATA_PIN);
     motor1 = new Motor(1, MOTOR_1_MIN_PPM, MOTOR_1_MAX_PPM, MOTOR_1_REVERSE_PPM, MOTOR_1_MIN_VEL, MOTOR_1_MIN_VEL_REV, MOTOR_1_DATA_PIN);
@@ -54,5 +54,5 @@ void setup() {
 
 void loop() {
     Motor::spin();
-    serial::receive();
+    //serial::receive();
 }

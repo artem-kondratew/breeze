@@ -12,12 +12,8 @@ public:
 
     static const uint8_t LED_ON = 1;
     static const uint8_t LED_OFF = 2;
-    static const uint8_t SET_MIN_PPM = 3;
-    static const uint8_t SET_REVERSE_PPM = 4;
-    static const uint8_t SET_MAX_PPM = 5;
-    static const uint8_t ALLOW_EMA = 6;
-    static const uint8_t SET_VELOCITIES = 7;
-    static const uint8_t INIT_MOTORS = 8;
+    static const uint8_t SET_VELOCITIES = 3;
+    static const uint8_t INIT_MOTORS = 4;
 
 private:
     Serial* serial_;
@@ -36,11 +32,6 @@ public:
 
     void led_on();
     void led_off();
-
-    void set_min_ppm();
-    void set_reverse_ppm();
-    void set_max_ppm();
-    void allow_ema();
 
     void set_velocities(int8_t vel0, int8_t vel1);
 
