@@ -1,12 +1,11 @@
 #include <chrono>
 
+#include "serial/commander.hpp"
 #include "serial/serial.hpp"
 #include "serial/socket.hpp"
-#include "gui/parser.hpp"
-#include "gui/window.hpp"
 
 
-#define SERIAL_PORT "/dev/ttyUSB0"
+#define SERIAL_PORT "/dev/ttyACM0"
 #define BAUDRATE 9600
 #define SERIAL_CMD_SIZE 3
 #define SERIAL_MSG_SIZE 1
