@@ -1,6 +1,6 @@
-from joystick import Joystick
-from parser import Parser
-from udp_socket import Socket
+from teleop.joystick import Joystick
+from navigation.parser import Parser
+from udp.udp_socket import Socket
 
 
 LOCALHOST = '127.0.0.1'

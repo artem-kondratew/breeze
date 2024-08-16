@@ -1,7 +1,7 @@
-from joystick import Joystick
+from teleop.joystick import Joystick
 from kinematics import calcVelocities
 import time
-from udp_socket import Socket
+from udp.udp_socket import Socket
 
 
 class Parser:
