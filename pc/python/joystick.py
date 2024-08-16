@@ -55,7 +55,8 @@ class Joystick:
         
         self.verbose = True
 
-        self.is_initialized = False
+        self.v0 : int = 0
+        self.v1 : int = 0
 
     def __delete__(self):
         pygame.quit()
@@ -79,7 +80,7 @@ class Joystick:
                 state[self.led_on_button_idx] = True if self.joystick.get_button(self.led_on_button) else False
                 state[self.led_off_button_idx] = True if self.joystick.get_button(self.led_off_button) else False
 
-                if self.joystick.get_button(self.init_button) and self.is_initialized:
+                if self.joystick.get_button(self.init_button):
                     state[self.init_button_idx] = True
                     self.is_initialized = False
 

@@ -32,6 +32,7 @@ def main():
     while True:
         # parser.blink()
         parser.parse_joystick_state(joystick.spin())
+        # parser.spin()
     
 
 if __name__ == '__main__':

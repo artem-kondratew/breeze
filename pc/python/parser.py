@@ -13,6 +13,9 @@ class Parser:
 
     def __init__(self, socket : Socket) -> None:
         self.socket = socket
+        self.v0 = 0
+        self.v1 = 0
+        self.t = time.time()
 
     def ledOn(self):
         self.socket.send([Parser.LED_ON, 0, 0, 0, 0])
@@ -38,9 +41,9 @@ class Parser:
         if state == None:
             return
 
-        v0, v1 = calcVelocities(state[Joystick.linear_axis_idx], state[Joystick.angular_axis_idx])
-        print(v0, v1)
-        self.setVelocities(v0, v1)
+        self.v0, self.v1 = calcVelocities(state[Joystick.linear_axis_idx], state[Joystick.angular_axis_idx])
+        print(self.v0, self.v1)
+        self.setVelocities(self.v0, self.v1)
 
         print(state)
 
@@ -50,3 +53,9 @@ class Parser:
             self.ledOff()
         if state[Joystick.init_button_idx]:
             self.initMotors()
+
+        self.t = time.time()
+
+    def spin(self):
+        if time.time() - self.t > 2:
+            self.setVelocities(0, 0)
