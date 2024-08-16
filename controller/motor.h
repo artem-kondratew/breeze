@@ -63,6 +63,7 @@ public:
 Motor* motor0;
 Motor* motor1;
 int8_t* percent_bounds_;
+uint64_t last_cmd_vel_time_;
 
 
 Motor::Motor(uint8_t id, uint16_t min_ppm, uint16_t max_ppm, uint16_t reverse_ppm,
@@ -146,8 +147,8 @@ void Motor::calc_ppm() {
         return;
     }
     
-    // ppm_ = EMA();
-    ppm_ = target_ppm_;
+    ppm_ = EMA();
+    // ppm_ = target_ppm_;
 
     t_ = new_t;
 }
@@ -198,6 +199,13 @@ void Motor::set_bounds(int8_t* bounds) {
 
 
 void Motor::spin() {
+    if (millis() - last_cmd_vel_time_ > 10000) {
+        tools::blink(3, 200);
+        motor0->set_ppm(motor0->reverse_ppm_);
+        motor1->set_ppm(motor1->reverse_ppm_);
+        last_cmd_vel_time_ = millis();
+    }
+    
     motor0->calc_ppm();
     motor1->calc_ppm();
     motor0->write_ppm();

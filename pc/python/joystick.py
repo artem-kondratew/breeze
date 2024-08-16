@@ -82,7 +82,6 @@ class Joystick:
 
                 if self.joystick.get_button(self.init_button):
                     state[self.init_button_idx] = True
-                    self.is_initialized = False
 
             if event.type == pygame.JOYBUTTONUP:
                 if not self.joystick.get_button(self.allow_button):
