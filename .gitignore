@@ -1,4 +1,5 @@
 .git
-build
+build_pc
+build_rpi
 .vscode
 __pycache__
