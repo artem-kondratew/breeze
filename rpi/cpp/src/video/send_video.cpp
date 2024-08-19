@@ -31,6 +31,8 @@ void sendVideo() {
         exit(-1);
     }
 
+    std::cout << "start sending" << std::endl;
+
     cv::Mat frame;
 
     while (cap.isOpened()) {
