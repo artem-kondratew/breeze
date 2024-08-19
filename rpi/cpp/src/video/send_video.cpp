@@ -5,27 +5,26 @@
 #include <opencv4/opencv2/highgui.hpp>
 
 
-size_t width = 640;
-size_t height = 480;
+std::string width = "640";
+std::string height = "480";
 
-std::string host = "192.168.1.100";
-size_t port = 554;
+std::string host = "192.168.197.38";
+std::string localhost = "127.0.0.1";
+std::string port = "5000";
 
-size_t fps = 30;
+constexpr size_t fps = 20;
 std::string framerate = std::to_string(fps) + "/1";
 
 
 void sendVideo() {
-    auto cap = cv::VideoCapture(4);
-    cap.set(cv::CAP_PROP_FRAME_WIDTH, width);
-    cap.set(cv::CAP_PROP_FRAME_HEIGHT, height);
+    cv::VideoCapture cap(0);
+    cap.set(cv::CAP_PROP_FRAME_WIDTH, 640);
+    cap.set(cv::CAP_PROP_FRAME_HEIGHT, 480);
 
-    std::string pipeline = "appsrc ! videoconvert ! video/x-raw,format=YUY2,width=" + std::to_string(width)
-                            + ",height=" + std::to_string(height) + ",framerate=" + framerate 
-                            + "! jpegenc ! rtpjpegpay ! udpsink host=" + host + "port=" + std::to_string(port);
+    std::string pipeline = "appsrc ! videoconvert ! video/x-raw,format=YUY2,width=" + width +",height=" + height
+                            + ",framerate=" + framerate + " ! jpegenc ! rtpjpegpay ! udpsink host=" + host + " port=" + port;
 
-
-    cv::VideoWriter writer(pipeline, cv::CAP_GSTREAMER, 0, 30, cv::Size(width, height), true);
+    cv::VideoWriter writer(pipeline, cv::CAP_GSTREAMER, 0, fps, cv::Size(640,480), true);
 
     if (!cap.isOpened() || !writer.isOpened()) {
         std::cout << "VideoCapture or VideoWriter not opened" << std::endl;
@@ -38,7 +37,7 @@ void sendVideo() {
         cap.read(frame);
 
         if (frame.empty()) {
-            break;
+            continue;
         }
 
         writer.write(frame);

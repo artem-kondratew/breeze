@@ -6,7 +6,7 @@
 
 
 std::string port = "5000";
-std::string framerate = "30/1";
+std::string framerate = "20/1";
 
 
 void receiveVideo() {
