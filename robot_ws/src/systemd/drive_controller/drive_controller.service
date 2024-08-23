@@ -4,7 +4,7 @@ Description="Service for arduino-rpi serial autostart"
 [Service]
 User=root
 WorkingDirectory=/usr/local/bin
-ExecStart=/usr/local/bin/breeze
+ExecStart=/home/pi/breeze/robot_ws/src/systemd_startup/drive_controller/drive_controller.bash
 # optional items below
 Restart=always
 RestartSec=1

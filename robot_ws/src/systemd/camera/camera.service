@@ -1,0 +1,13 @@
+[Unit]
+Description="Service for arduino-rpi serial autostart"
+
+[Service]
+User=root
+WorkingDirectory=/usr/local/bin
+ExecStart=/home/pi/breeze/robot_ws/src/systemd_startup/camera/camera.bash
+# optional items below
+Restart=always
+RestartSec=1
+
+[Install]
+WantedBy=multi-user.target

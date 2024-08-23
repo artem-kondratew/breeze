@@ -1,0 +1,13 @@
+[Unit]
+Description="Service for gnss and magnetometer broadcasting"
+
+[Service]
+User=root
+WorkingDirectory=/usr/local/bin
+ExecStart=/home/pi/breeze/robot_ws/src/systemd_startup/nav/nav.bash
+# optional items below
+Restart=always
+RestartSec=1
+
+[Install]
+WantedBy=multi-user.target

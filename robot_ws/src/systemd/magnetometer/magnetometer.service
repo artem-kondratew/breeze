@@ -1,0 +1,13 @@
+[Unit]
+Description="Service for magnetometer modules"
+
+[Service]
+User=root
+WorkingDirectory=/usr/local/bin
+ExecStart=/home/pi/breeze/robot_ws/src/systemd_startup/magnetometer/magnetometer.bash
+# optional items below
+Restart=always
+RestartSec=1
+
+[Install]
+WantedBy=multi-user.target
