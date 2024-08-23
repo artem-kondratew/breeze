@@ -1,4 +1,5 @@
 magnetometer:
     ros__parameters:
         output_topic: /magnetometer # topic with magnetometer data
+        active_topic: /magnetometer/active
         locus_port: /dev/ttyUSB0    # locus port

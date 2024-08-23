@@ -9,17 +9,17 @@ from launch_ros.actions import Node
 
 def generate_launch_description():
 
-    package_name = 'gnss'
+    # package_name = 'sensors'
     
-    parameters = [os.path.join(get_package_share_directory(package_name), 'config', 'params.yaml')]
+    # parameters = [os.path.join(get_package_share_directory(package_name), 'config', 'gnss_params.yaml')]
 
-    gnss = Node(
-        package=package_name,
-        executable='gnss',
-        parameters=[parameters],
+    camera = Node(
+        package='v4l2_camera',
+        executable='v4l2_camera_node',
+        # parameters=[parameters],
         output='screen',
     )
 
     return LaunchDescription([
-        gnss,
+        camera,
     ])

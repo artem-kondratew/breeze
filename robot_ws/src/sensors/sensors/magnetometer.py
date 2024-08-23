@@ -6,6 +6,7 @@ import rclpy
 import time
 from rclpy.node import Node
 from threading import Thread
+from std_msgs.msg import Bool
 from std_msgs.msg import Float64
 
 from .submodules.locus import Locus
@@ -17,14 +18,20 @@ class Magnetometer(Node):
         super().__init__('magnetometer')
 
         self.declare_parameters(namespace='', parameters=[('output_topic', ''),
+                                                          ('active_topic', ''),
                                                           ('locus_port', ''),])
         self.output_topic = self.get_parameter('output_topic').value
+        self.active_topic = self.get_parameter('active_topic').value
         self.locus_port = self.get_parameter('locus_port').value
 
         self.get_logger().info(f'output_topic: {self.output_topic}')
+        self.get_logger().info(f'active_topic: {self.active_topic}')
         self.get_logger().info(f'locus_port: {self.locus_port}')
         
         self.publisher = self.create_publisher(Float64, self.get_parameter('output_topic').value, 10)
+        self.active_publisher = self.create_publisher(Bool, self.get_parameter('active_topic').value, 10)
+
+        self.timer = self.create_timer(1.0, self.activeCallback)
 
         self.locus = Locus(self.locus_port)
         self.calibrateLocus()
@@ -35,6 +42,11 @@ class Magnetometer(Node):
         self.thread.start()
 
         self.get_logger().info(f'initialized')
+
+    def activeCallback(self):
+        msg = Bool()
+        msg.data = True
+        self.active_publisher.publish(msg)
 
     def calibrateLocus(self):
         self.locus.set_yaw_offset(0.0)
