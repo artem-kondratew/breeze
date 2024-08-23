@@ -1,0 +1,3 @@
+joystick:
+    ros__parameters:
+        output_topic: /drive_controller_input # topic cmd and vels for arduino

@@ -1,0 +1,4 @@
+gnss:
+    ros__parameters:
+        output_topic: /gnss # topic with gnss data
+        port: /dev/ttyUSB1  # gnss port
