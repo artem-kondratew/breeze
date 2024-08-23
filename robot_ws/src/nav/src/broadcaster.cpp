@@ -3,7 +3,6 @@
 #include <iostream>
 #include <memory>
 
-
 #include <geometry_msgs/msg/transform_stamped.hpp>
 #include <rclcpp/rclcpp.hpp>
 #include <sensor_msgs/msg/nav_sat_fix.hpp>
