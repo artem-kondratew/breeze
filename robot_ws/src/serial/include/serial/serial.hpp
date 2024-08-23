@@ -3,6 +3,7 @@
 
 
 #include <fcntl.h>
+#include <poll.h>
 #include <termios.h>
 #include <unistd.h>
 #include <cstring>
@@ -48,6 +49,8 @@ private:
 public:
     static void delay(size_t ms);
 
+    bool isReadyToRead();
+    
     void send(Msg* msg);
     Msg receive(size_t size);
 

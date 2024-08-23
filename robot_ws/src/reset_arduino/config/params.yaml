@@ -1,0 +1,5 @@
+reset_arduino:
+    ros__parameters:
+        input_topic: /arduino/reset          # topic with gnss data
+        output_topic: /arduino/after_reset   # topic with true if node is active
+        reset_pin: 18                        # rpi output pin

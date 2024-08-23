@@ -8,6 +8,7 @@ endif()
 find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(robot_msgs REQUIRED)
+find_package(std_msgs REQUIRED)
 
 include_directories(include)
 
@@ -20,7 +21,7 @@ add_library(${PROJECT_NAME}
     src/ros_serial.cpp
 )
 
-ament_target_dependencies(${PROJECT_NAME} rclcpp robot_msgs)
+ament_target_dependencies(${PROJECT_NAME} rclcpp robot_msgs std_msgs)
 
 ament_export_targets(${PROJECT_NAME} HAS_LIBRARY_TARGET)
 
