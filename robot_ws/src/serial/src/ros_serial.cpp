@@ -9,6 +9,7 @@ RosSerial::RosSerial(std::string node_name) : Node(node_name) {
     this->declare_parameter("pub_topic", "");
     this->declare_parameter("sub_topic", "");
     this->declare_parameter("arduino_reset_topic", "");
+    this->declare_parameter("arduino_success_reset_topic", "");
     this->declare_parameter("use_receiver", false);
     this->declare_parameter("reading_timeout", 0);
 
@@ -19,6 +20,7 @@ RosSerial::RosSerial(std::string node_name) : Node(node_name) {
     std::string pub_topic = this->get_parameter("pub_topic").as_string();
     std::string sub_topic = this->get_parameter("sub_topic").as_string();
     std::string arduino_reset_topic = this->get_parameter("arduino_reset_topic").as_string();
+    std::string arduino_success_reset_topic = this->get_parameter("arduino_success_reset_topic").as_string();
     use_receiver_ = this->get_parameter("use_receiver").as_bool();
     reading_timeout_ = this->get_parameter("reading_timeout").as_int();
 
@@ -29,6 +31,7 @@ RosSerial::RosSerial(std::string node_name) : Node(node_name) {
     RCLCPP_INFO(this->get_logger(), "pub_topic: %s", pub_topic.c_str());
     RCLCPP_INFO(this->get_logger(), "sub_topic: %s", sub_topic.c_str());
     RCLCPP_INFO(this->get_logger(), "arduino_reset_topic: %s", arduino_reset_topic.c_str());
+    RCLCPP_INFO(this->get_logger(), "arduino_success_reset_topic: %s", arduino_success_reset_topic.c_str());
     RCLCPP_INFO(this->get_logger(), "use_receiver: %s", use_receiver_ ? "true" : "false");
     RCLCPP_INFO(this->get_logger(), "reading_timeout: %ld", reading_timeout_);
 
@@ -41,6 +44,7 @@ RosSerial::RosSerial(std::string node_name) : Node(node_name) {
     subscription_ = this->create_subscription<robot_msgs::msg::UInt8Vector>(sub_topic, 10, std::bind(&RosSerial::subscriptionCallback, this, _1));
 
     arduino_reset_pub_ = this->create_publisher<std_msgs::msg::Bool>(arduino_reset_topic, 10);
+    arduino_reset_sub_ = this->create_subscription<std_msgs::msg::Bool>(arduino_success_reset_topic, 10, std::bind(&RosSerial::reconnectCallback, this, _1));
 
     reading_ping_timer_ = this->create_wall_timer(std::chrono::milliseconds(1000), std::bind(&RosSerial::readingPingCallback, this));
 
@@ -137,4 +141,9 @@ void RosSerial::readingPingCallback() {
         serial_->disconnect();
         arduino_reset_pub_->publish(msg);
     }
+}
+
+
+void RosSerial::reconnectCallback(const std_msgs::msg::Bool& msg) {    
+    this->connect();
 }

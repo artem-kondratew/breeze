@@ -21,6 +21,7 @@ private:
     rclcpp::Subscription<robot_msgs::msg::UInt8Vector>::SharedPtr subscription_;
 
     rclcpp::Publisher<std_msgs::msg::Bool>::SharedPtr arduino_reset_pub_;
+    rclcpp::Subscription<std_msgs::msg::Bool>::SharedPtr arduino_reset_sub_;
 
     rclcpp::TimerBase::SharedPtr reading_ping_timer_;
 
@@ -51,6 +52,7 @@ private:
     void readingThread();
     void subscriptionCallback(const robot_msgs::msg::UInt8Vector& ros_msg);
     void readingPingCallback();
+    void reconnectCallback(const std_msgs::msg::Bool& msg);
 };
 
 

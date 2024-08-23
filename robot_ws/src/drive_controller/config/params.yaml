@@ -1,18 +1,19 @@
 drive_controller_serial:
     ros__parameters:
-        port: /dev/ttyACM0                         # arduino port
-        baudrate: 9600                             # baudrate for arduino
-        cmd_size: 3                                # msg size from linux
-        msg_size: 1                                # msg size from arduino
-        pub_topic: /serial/drive_controller/pub    # topic name for arduino receiver
-        sub_topic: /serial/drive_controller/sub    # topic name for arduino sender
-        use_receiver: true                         # ignoring msgs from arduino if false
-        reading_timeout: 4000                      # starting arduino reboot after timeout
-        arduino_reset_topic: /arduino/reset        # bool msg with true value if reading_timeout
+        port: /dev/ttyUSB0                                  # arduino port
+        baudrate: 9600                                      # baudrate for arduino
+        cmd_size: 3                                         # msg size from linux
+        msg_size: 1                                         # msg size from arduino
+        pub_topic: /serial/drive_controller/pub             # topic name for arduino receiver
+        sub_topic: /serial/drive_controller/sub             # topic name for arduino sender
+        use_receiver: true                                  # ignoring msgs from arduino if false
+        reading_timeout: 10000                              # starting arduino reboot after timeout
+        arduino_reset_topic: /arduino/reset                 # bool msg with true value if reading_timeout
+        arduino_success_reset_topic: /arduino/reset/success # bool msg after arduino reset
 
 drive_controller:
     ros__parameters:
-        input_sub: /drive_controller_input         # input topic
-        serial_pub: /serial/drive_controller/pub   # topic with motors velocities values in rad/s
-        serial_sub: /serial/drive_controller/sub   # topic with odometry poses in ticks and odometry velocities in rad/s
-        cmd_size: 3                                # cmd size
+        input_sub: /drive_controller_input                  # input topic
+        serial_pub: /serial/drive_controller/pub            # topic with motors velocities values in rad/s
+        serial_sub: /serial/drive_controller/sub            # topic with odometry poses in ticks and odometry velocities in rad/s
+        cmd_size: 3                                         # cmd size
