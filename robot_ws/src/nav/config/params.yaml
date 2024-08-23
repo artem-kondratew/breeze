@@ -2,5 +2,6 @@ broadcaster:
     ros__parameters:
         gnss_topic: /gnss
         magnetometer_topic: /magnetometer
+        active_topic: /broadcaster/active
         map_frame: map
         base_footprint_frame: base_footprint

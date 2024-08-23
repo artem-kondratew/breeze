@@ -7,6 +7,7 @@
 #include <geometry_msgs/msg/transform_stamped.hpp>
 #include <rclcpp/rclcpp.hpp>
 #include <sensor_msgs/msg/nav_sat_fix.hpp>
+#include <std_msgs/msg/bool.hpp>
 #include <std_msgs/msg/float64.hpp>
 #include <tf2/LinearMath/Quaternion.h>
 #include <tf2_ros/transform_broadcaster.h>
@@ -17,7 +18,11 @@ private:
     rclcpp::Subscription<sensor_msgs::msg::NavSatFix>::SharedPtr gnss_sub_;
     rclcpp::Subscription<std_msgs::msg::Float64>::SharedPtr magnetometer_sub_;
 
+    rclcpp::Publisher<std_msgs::msg::Bool>::SharedPtr active_pub_;
+
     rclcpp::TimerBase::SharedPtr timer_;
+    rclcpp::TimerBase::SharedPtr active_timer_;
+
     std::unique_ptr<tf2_ros::TransformBroadcaster> tf2_broadcaster_;
 
     std::string map_frame_, base_footprint_frame_;
@@ -35,6 +40,7 @@ private:
     void gnssCallback(const sensor_msgs::msg::NavSatFix& msg);
     void magnetometerCallback(const std_msgs::msg::Float64& msg);
     void transformCallback();
+    void activeCallback();
 };
 
 
@@ -44,23 +50,29 @@ Broadcaster::Broadcaster() : Node("broadcaster") {
 
     this->declare_parameter("gnss_topic", "");
     this->declare_parameter("magnetometer_topic", "");
+    this->declare_parameter("active_topic", "");
     this->declare_parameter("map_frame", "");
     this->declare_parameter("base_footprint_frame", "");
 
     std::string gnss_topic = this->get_parameter("gnss_topic").as_string();
     std::string magnetometer_topic = this->get_parameter("magnetometer_topic").as_string();
+    std::string active_topic = this->get_parameter("active_topic").as_string();
     map_frame_ = this->get_parameter("map_frame").as_string();
     base_footprint_frame_ = this->get_parameter("base_footprint_frame").as_string();
 
     RCLCPP_INFO(this->get_logger(), "gnss_topic: '%s'", gnss_topic.c_str());
     RCLCPP_INFO(this->get_logger(), "magnetometer_topic: '%s'", magnetometer_topic.c_str());
+    RCLCPP_INFO(this->get_logger(), "active_topic: '%s'", active_topic.c_str());
     RCLCPP_INFO(this->get_logger(), "map_frame: '%s'", map_frame_.c_str());
     RCLCPP_INFO(this->get_logger(), "base_footprint_frame: '%s'", base_footprint_frame_.c_str());
 
     gnss_sub_ = this->create_subscription<sensor_msgs::msg::NavSatFix>(gnss_topic, 10, std::bind(&Broadcaster::gnssCallback, this, _1));
     magnetometer_sub_ = this->create_subscription<std_msgs::msg::Float64>(magnetometer_topic, 10, std::bind(&Broadcaster::magnetometerCallback, this, _1));
 
+    active_pub_ = this->create_publisher<std_msgs::msg::Bool>(active_topic, 10);
+
     timer_ = this->create_wall_timer(10ms, std::bind(&Broadcaster::transformCallback, this));
+    active_timer_ = this->create_wall_timer(1s, std::bind(&Broadcaster::activeCallback, this));
 
     tf2_broadcaster_ = std::make_unique<tf2_ros::TransformBroadcaster>(*this);
 }
@@ -96,6 +108,13 @@ void Broadcaster::transformCallback() {
         transform.transform.rotation.z = magnetometer_data_.z();
         transform.transform.rotation.w = magnetometer_data_.w();
         tf2_broadcaster_->sendTransform(transform);
+}
+
+
+void Broadcaster::activeCallback() {
+        auto msg = std_msgs::msg::Bool();
+        msg.data = true;
+        active_pub_->publish(msg);
 }
 
 
