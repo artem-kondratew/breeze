@@ -1,0 +1,28 @@
+#ifndef CONFIG_PPM_H
+#define CONFIG_PPM_H
+
+
+#define MOTOR_0_DATA_PIN               10 // D10 шилда, левый мотор
+#define MOTOR_1_DATA_PIN               11 // D11 шилда, правый мотор
+
+#define MOTOR_0_MIN_PPM              1000
+#define MOTOR_0_REVERSE_PPM          1500
+#define MOTOR_0_MAX_PPM              1956
+
+#define MOTOR_1_MIN_PPM              1000
+#define MOTOR_1_REVERSE_PPM          1500
+#define MOTOR_1_MAX_PPM              1956
+
+#define MOTOR_0_REAL_REVERSE_PPM_NEG 1460
+#define MOTOR_0_REAL_REVERSE_PPM_POS 1512
+
+#define MOTOR_1_REAL_REVERSE_PPM_NEG 1460
+#define MOTOR_1_REAL_REVERSE_PPM_POS 1511
+
+#define MOTOR_0_MIN_VEL MOTOR_0_REAL_REVERSE_PPM_POS - MOTOR_0_REVERSE_PPM
+#define MOTOR_0_MIN_VEL_REV MOTOR_0_REAL_REVERSE_PPM_NEG - MOTOR_0_REVERSE_PPM
+
+#define MOTOR_1_MIN_VEL MOTOR_1_REAL_REVERSE_PPM_POS - MOTOR_1_REVERSE_PPM
+#define MOTOR_1_MIN_VEL_REV MOTOR_1_REAL_REVERSE_PPM_NEG - MOTOR_1_REVERSE_PPM
+
+#endif

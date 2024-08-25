@@ -1,11 +1,9 @@
 #ifndef MOTOR_H
 #define MOTOR_H
 
-
-#include <Servo.h>
-
-#include "mode.h"
+#include "config_ppm.h"
 #include "tools.h"
+#include <Servo.h>
 
 
 class Motor {
@@ -60,8 +58,12 @@ public:
 };
 
 
-Motor* motor0;
-Motor* motor1;
+Motor* motor0 = new Motor(0, MOTOR_0_MIN_PPM, MOTOR_0_MAX_PPM, MOTOR_0_REVERSE_PPM,
+                             MOTOR_0_MIN_VEL, MOTOR_0_MIN_VEL_REV, MOTOR_0_DATA_PIN);
+                             
+Motor* motor1 = new Motor(1, MOTOR_1_MIN_PPM, MOTOR_1_MAX_PPM, MOTOR_1_REVERSE_PPM,
+                             MOTOR_1_MIN_VEL, MOTOR_1_MIN_VEL_REV, MOTOR_1_DATA_PIN);
+
 int8_t* percent_bounds_;
 
 
@@ -127,8 +129,8 @@ void Motor::set_max_ppms() {
 }
 
 
-uint16_t Motor::EMA() {
-    static const float alpha = 0.075; // 0 -> 100: 500 ms
+uint16_t Motor::EMA() { // TODO Мб стоит закинуть в прерывание
+    static const float alpha = 0.1; //
     
     if (abs(ppm_ - target_ppm_) < 10) {
         return target_ppm_;
@@ -138,11 +140,11 @@ uint16_t Motor::EMA() {
 }
 
 
-void Motor::calc_ppm() {    
+void Motor::calc_ppm() {     // TODO подобрать правильное время для EMA 
     uint64_t new_t = millis();
     uint64_t dt = new_t - t_;
     
-    if (dt < 10) {
+    if (dt < 50) {
         return;
     }
     
