@@ -88,7 +88,7 @@ void RosSerial::readingThread() {
     }
 
     while (rclcpp::ok()) {
-        if (!serial_->isReadyToRead()) {
+        if (!serial_->isReadyToRead() || !serial_->isOpened()) {
             continue;
         }
 
@@ -113,6 +113,10 @@ Msg RosSerial::createSerialMsg(robot_msgs::msg::UInt8Vector ros_msg) {
 
 
 void RosSerial::subscriptionCallback(const robot_msgs::msg::UInt8Vector& ros_msg) {
+    if (!serial_->isOpened()) {
+        return;
+    }
+
     first_ros_msg_ = true;
     Msg serial_msg = createSerialMsg(ros_msg);
     serial_->send(&serial_msg);
@@ -120,7 +124,7 @@ void RosSerial::subscriptionCallback(const robot_msgs::msg::UInt8Vector& ros_msg
 
 
 void RosSerial::readingPingCallback() {    
-    if (!first_ros_msg_) {
+    if (!first_ros_msg_ || !serial_->isOpened()) {
         return;
     }
 
@@ -130,6 +134,7 @@ void RosSerial::readingPingCallback() {
         RCLCPP_INFO(this->get_logger(), "READING TIMEOUT ERROR");
         auto msg = std_msgs::msg::Bool();
         msg.data = true;
+        serial_->disconnect();
         arduino_reset_pub_->publish(msg);
     }
 }
