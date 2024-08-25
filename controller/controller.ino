@@ -11,7 +11,7 @@ void setup() {
     
     digitalWrite(LED_BUILTIN, LOW);
 
-    tools:tools::init_aled();
+    tools::init_aled();
     
     serial::init(CMD_SIZE, MSG_SIZE, Parser::callback);
     serial::connect();
