@@ -16,14 +16,13 @@
 
 class Serial {
 private:
-    static const size_t TIMER_ = 1000;
-
     struct termios serial_port_settings_;
 
     std::string port_;
     size_t baudrate_;
     size_t cmd_size_;
     size_t msg_size_;
+    size_t connect_delay_;
     size_t cmd_data_size_;
     size_t msg_data_size_;
     int fd_;
@@ -33,7 +32,7 @@ private:
     bool verbose_;
 
 public:
-    Serial(std::string port, size_t baudrate, size_t cmd_data_size, size_t msg_data_size);
+    Serial(std::string port, size_t baudrate, size_t cmd_data_size, size_t msg_data_size, size_t connect_delay);
     ~Serial();
     Serial(const Serial& other) = delete;
     Serial(Serial&& other) = delete;

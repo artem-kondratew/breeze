@@ -6,6 +6,7 @@ RosSerial::RosSerial(std::string node_name) : Node(node_name) {
     this->declare_parameter("baudrate", 0);
     this->declare_parameter("cmd_size", 0);
     this->declare_parameter("msg_size", 0);
+    this->declare_parameter("connect_delay", 0);
     this->declare_parameter("pub_topic", "");
     this->declare_parameter("sub_topic", "");
     this->declare_parameter("arduino_reset_topic", "");
@@ -17,6 +18,7 @@ RosSerial::RosSerial(std::string node_name) : Node(node_name) {
     baudrate_ = this->get_parameter("baudrate").as_int();
     cmd_size_ = this->get_parameter("cmd_size").as_int();
     msg_size_ = this->get_parameter("msg_size").as_int();
+    connect_delay_ = this->get_parameter("connect_delay").as_int();
     std::string pub_topic = this->get_parameter("pub_topic").as_string();
     std::string sub_topic = this->get_parameter("sub_topic").as_string();
     std::string arduino_reset_topic = this->get_parameter("arduino_reset_topic").as_string();
@@ -28,6 +30,7 @@ RosSerial::RosSerial(std::string node_name) : Node(node_name) {
     RCLCPP_INFO(this->get_logger(), "baudrate: %ld", baudrate_);
     RCLCPP_INFO(this->get_logger(), "cmd_size: %ld", cmd_size_);
     RCLCPP_INFO(this->get_logger(), "msg_size: %ld", msg_size_);
+    RCLCPP_INFO(this->get_logger(), "connect_delay: %ld", connect_delay_);
     RCLCPP_INFO(this->get_logger(), "pub_topic: %s", pub_topic.c_str());
     RCLCPP_INFO(this->get_logger(), "sub_topic: %s", sub_topic.c_str());
     RCLCPP_INFO(this->get_logger(), "arduino_reset_topic: %s", arduino_reset_topic.c_str());
@@ -58,9 +61,9 @@ RosSerial::RosSerial(std::string node_name) : Node(node_name) {
 
 void RosSerial::connect() {
     delete serial_;
-    serial_ = new Serial(port_, baudrate_, cmd_size_, msg_size_);
+    serial_ = new Serial(port_, baudrate_, cmd_size_, msg_size_, connect_delay_);
     if (serial_->isOpened()) {
-        RCLCPP_INFO(this->get_logger(), "Connected to serial device '%s' with baudrate %ld", serial_->port().c_str(), serial_->baudrate());
+        RCLCPP_INFO(this->get_logger(), "Opened serial device '%s' with baudrate %ld. Connecting...", serial_->port().c_str(), serial_->baudrate());
     }
     else {
         RCLCPP_FATAL(this->get_logger(), "Unable to connect to serial device '%s' with baudrate %ld", serial_->port().c_str(), serial_->baudrate());
@@ -144,6 +147,11 @@ void RosSerial::readingPingCallback() {
 }
 
 
-void RosSerial::reconnectCallback(const std_msgs::msg::Bool& msg) {    
+void RosSerial::reconnectCallback(const std_msgs::msg::Bool& msg) {
+    if (!msg.data) {
+        return;
+    }
+    
+    std::cout << "RECONNECT" << std::endl; 
     this->connect();
 }

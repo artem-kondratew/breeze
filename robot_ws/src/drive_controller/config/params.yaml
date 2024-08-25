@@ -4,6 +4,7 @@ drive_controller_serial:
         baudrate: 9600                                      # baudrate for arduino
         cmd_size: 3                                         # msg size from linux
         msg_size: 1                                         # msg size from arduino
+        connect_delay: 50                                   # delay between sending cmd while connection
         pub_topic: /serial/drive_controller/pub             # topic name for arduino receiver
         sub_topic: /serial/drive_controller/sub             # topic name for arduino sender
         use_receiver: true                                  # ignoring msgs from arduino if false

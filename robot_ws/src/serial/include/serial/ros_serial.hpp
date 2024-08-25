@@ -29,6 +29,7 @@ private:
     size_t baudrate_;
     size_t cmd_size_;
     size_t msg_size_;
+    size_t connect_delay_;
 
     Serial* serial_;
     bool use_receiver_;

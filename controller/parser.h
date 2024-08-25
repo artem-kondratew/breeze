@@ -46,8 +46,6 @@ void Parser::callback(uint8_t* cmd) {
         Mode::init();
         tools::ledOff();
     }
-
-//    Mode::set_mode(cmd[0]);
 }
 
 

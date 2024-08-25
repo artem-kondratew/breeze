@@ -88,9 +88,9 @@ void Motor::init() {
     motor0->initialized_ = true;
     motor1->initialized_ = true;
     set_max_ppms();
-    delay(2400);
+    delay(50);
     set_reverse_ppms();
-    delay(1000);
+    delay(50);
 }
 
 

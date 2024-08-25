@@ -52,16 +52,16 @@ void setup() {
 }
 
 uint64_t t;
-int d = 100;
+int i = 0;
 void loop() {
     Motor::spin();
     serial::receive();
-    if (d == 1000) {
-      return;
+    if (i == 10) {
+      //return;
     }
-    if (millis() - t > d) {
+    if (millis() - t > 1000) {
         serial::ok();
         t = millis();
-        d += 100;
+        i++;
     }
 }

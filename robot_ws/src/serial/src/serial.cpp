@@ -1,7 +1,7 @@
 #include "serial/serial.hpp"
 
 
-Serial::Serial(std::string port, size_t baudrate, size_t cmd_data_size, size_t msg_data_size) {
+Serial::Serial(std::string port, size_t baudrate, size_t cmd_data_size, size_t msg_data_size, size_t connect_delay) {
     fd_ = open(port.c_str(), O_RDWR | O_NOCTTY | O_NONBLOCK);
 
     tcgetattr(fd_, &serial_port_settings_);
@@ -29,6 +29,7 @@ Serial::Serial(std::string port, size_t baudrate, size_t cmd_data_size, size_t m
     msg_data_size_ = msg_data_size;
     cmd_size_ = Msg::SERVICE_BYTES + cmd_data_size_;
     msg_size_ = Msg::SERVICE_BYTES + msg_data_size_;
+    connect_delay_ = connect_delay;
 
     is_feedback_correct_ = false;
     if (fd_ != -1) {
@@ -191,7 +192,7 @@ bool Serial::connect() {
     auto start_timer = std::chrono::system_clock::now();
     while (!is_feedback_correct_) {
         auto end_timer = std::chrono::system_clock::now();
-        if (std::chrono::duration_cast<std::chrono::milliseconds>(end_timer - start_timer).count() > int(TIMER_)) {
+        if (std::chrono::duration_cast<std::chrono::milliseconds>(end_timer - start_timer).count() > int(connect_delay_)) {
             send(&ping_cmd);
             receive(msg_data_size_);
             start_timer = std::chrono::system_clock::now();
