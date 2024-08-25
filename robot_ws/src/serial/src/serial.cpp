@@ -113,9 +113,32 @@ void Serial::send(Msg* msg) {
 }
 
 
+bool Serial::isReadyToRead() {
+    bool return_value = false;
+    struct pollfd* pfd;
+    pfd = (pollfd*)calloc(1, sizeof(struct pollfd));
+    pfd->fd = fd_;
+    pfd->events = POLLIN;
+
+    int pollReturn{-1};
+    pollReturn = poll(pfd, 1, 0);
+
+    if (pollReturn > 0)
+    {
+        if (pfd->revents & POLLIN)
+        {
+            return_value = true;
+        }
+    }
+
+    free(pfd);
+    return(return_value);
+}
+
+
 Msg Serial::receive(size_t data_size) {
     Msg msg(data_size);
-    int res = read(fd_, msg.storage(), msg.size());
+    read(fd_, msg.storage(), msg.size());
 
     is_feedback_correct_ = false;
 
@@ -126,7 +149,6 @@ Msg Serial::receive(size_t data_size) {
 
     if (*(msg.storage() + Msg::START_BYTE_0_IDX) == Msg::START_BYTE && *(msg.storage() + Msg::START_BYTE_1_IDX) == Msg::START_BYTE) {
         if (checkChecksumFromReceive(msg.storage(), msg.size())) {
-
             is_feedback_correct_ = true;
             return msg;
         }
@@ -141,7 +163,7 @@ Msg Serial::receive(size_t data_size) {
         even = !even;
         std::cout << nop << std::endl;
     }
-    
+
     return Msg(0);
 }
 
