@@ -51,8 +51,17 @@ void setup() {
     motor1 = new Motor(1, MOTOR_1_MIN_PPM, MOTOR_1_MAX_PPM, MOTOR_1_REVERSE_PPM, MOTOR_1_MIN_VEL, MOTOR_1_MIN_VEL_REV, MOTOR_1_DATA_PIN);
 }
 
-
+uint64_t t;
+int d = 100;
 void loop() {
     Motor::spin();
     serial::receive();
+    if (d == 1000) {
+      return;
+    }
+    if (millis() - t > d) {
+        serial::ok();
+        t = millis();
+        d += 100;
+    }
 }
