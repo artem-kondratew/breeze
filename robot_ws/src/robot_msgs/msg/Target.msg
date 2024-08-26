@@ -1,0 +1,2 @@
+sensor_msgs/NavSatFix gnss
+float64 angle
