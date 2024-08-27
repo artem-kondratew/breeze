@@ -52,6 +52,7 @@ private:
 
     void readingThread();
     void subscriptionCallback(const robot_msgs::msg::UInt8Vector& ros_msg);
+    void setReconnectTask();
     void readingPingCallback();
     void reconnectCallback(const std_msgs::msg::Bool& msg);
 };

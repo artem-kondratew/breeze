@@ -51,7 +51,7 @@ RosSerial::RosSerial(std::string node_name) : Node(node_name) {
 
     reading_ping_timer_ = this->create_wall_timer(std::chrono::milliseconds(1000), std::bind(&RosSerial::readingPingCallback, this));
 
-    first_ros_msg_ = true;
+    first_ros_msg_ = false;
     last_reading_time_ = this->get_clock()->now();
 
     reading_thread_ = std::thread(&RosSerial::readingThread, this);
@@ -130,6 +130,15 @@ void RosSerial::subscriptionCallback(const robot_msgs::msg::UInt8Vector& ros_msg
 }
 
 
+void RosSerial::setReconnectTask() {
+        RCLCPP_WARN(this->get_logger(), "SETTING RECONNECT TASK");
+        auto msg = std_msgs::msg::Bool();
+        msg.data = true;
+        serial_->disconnect();
+        arduino_reset_pub_->publish(msg);
+}
+
+
 void RosSerial::readingPingCallback() {    
     if (!first_ros_msg_ || !serial_->isOpened()) {
         return;
@@ -138,11 +147,8 @@ void RosSerial::readingPingCallback() {
     size_t dt = static_cast<size_t>((this->get_clock()->now().seconds() - last_reading_time_.seconds()) * 1000);
 
     if (dt > reading_timeout_) {
-        RCLCPP_INFO(this->get_logger(), "READING TIMEOUT ERROR");
-        auto msg = std_msgs::msg::Bool();
-        msg.data = true;
-        serial_->disconnect();
-        arduino_reset_pub_->publish(msg);
+        RCLCPP_WARN(this->get_logger(), "READING TIMEOUT ERROR");
+        setReconnectTask();
     }
 }
 
@@ -152,6 +158,6 @@ void RosSerial::reconnectCallback(const std_msgs::msg::Bool& msg) {
         return;
     }
     
-    std::cout << "RECONNECT" << std::endl; 
+    RCLCPP_WARN(this->get_logger(), "READING TIMEOUT ERROR");
     this->connect();
 }
