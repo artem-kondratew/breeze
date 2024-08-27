@@ -55,13 +55,16 @@ class Dispatcher(Node):
         
         msg = NavData()
         msg.gnss = self.gnss_.gnss
-        msg.yaw.data = 0.0
+        if self.magnetometer_ != None:
+            msg.yaw.data = self.magnetometer_.data
+        else:
+            msg.yaw.data = 0.0
         msg.dyaw.data = 0.0
         self.publisher_.publish(msg)
 
     def magnetometerCallback(self, msg : Float64):
         self.magnetometer_ = msg
-        print(f'magnetometer: {msg.data}')
+        # print(f'magnetometer: {msg.data}')
 
     def locusCallback(self, msg : Float64):
         self.locus_ = msg
