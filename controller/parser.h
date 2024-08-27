@@ -2,7 +2,6 @@
 #define PARSER_H
 
 
-#include "mode.h"
 #include "motor.h"
 #include "serial.h"
 #include "tools.h"
@@ -41,10 +40,7 @@ void Parser::callback(uint8_t* cmd) {
     }
 
     if (cmd_byte == INIT_MOTORS) {
-        tools::ledOn();
         Motor::init();
-        Mode::init();
-        tools::ledOff();
     }
 }
 

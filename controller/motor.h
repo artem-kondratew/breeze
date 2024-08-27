@@ -4,7 +4,6 @@
 
 #include <Servo.h>
 
-#include "mode.h"
 #include "tools.h"
 
 
@@ -83,6 +82,7 @@ Motor::Motor(uint8_t id, uint16_t min_ppm, uint16_t max_ppm, uint16_t reverse_pp
 
 
 void Motor::init() {
+    tools::ledOn();
     motor0->esc_.attach(motor0->data_pin_, motor0->min_ppm_, motor0->max_ppm_);
     motor1->esc_.attach(motor1->data_pin_, motor1->min_ppm_, motor1->max_ppm_);
     motor0->initialized_ = true;
@@ -91,6 +91,7 @@ void Motor::init() {
     delay(50);
     set_reverse_ppms();
     delay(50);
+    tools::ledOff();
 }
 
 
@@ -180,7 +181,7 @@ void Motor::set_velocity(int16_t vel) {
 
 
 void Motor::set_velocity_percents(int8_t percent) {    
-    percent = percent < 0 ? constrain(percent, percent_bounds_[0], percent_bounds_[1]) : constrain(percent, percent_bounds_[2], percent_bounds_[3]);
+    percent = constrain(percent, -100.0, 100.0);
     int16_t vel = max_vel_ * (percent / 100.0);
     set_velocity(vel);
 }
