@@ -2,4 +2,4 @@ magnetometer:
     ros__parameters:
         output_topic: /magnetometer        # topic with magnetometer data
         active_topic: /magnetometer/active # topic with true if node is active
-        alpha: 0.75                        # weight for EMA
+        alpha: 0.30                        # weight for EMA
