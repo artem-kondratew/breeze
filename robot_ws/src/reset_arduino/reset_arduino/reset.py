@@ -31,17 +31,23 @@ class ResetArduino(Node):
         GPIO.setup(self.reset_pin_, GPIO.OUT)
         GPIO.output(18, GPIO.HIGH)
 
+        self.reset()
+
         self.get_logger().info(f'node started')
 
     def __delete__(self):
         GPIO.cleanup()
 
-    def callback(self, msg):
-        if msg.data != True:
-            return
+    def reset(self):
+        self.get_logger().info(f'arduino reset')
         GPIO.output(18, GPIO.LOW)
         time.sleep(0.02)
         GPIO.output(18, GPIO.HIGH)
+
+    def callback(self, msg):
+        if msg.data != True:
+            return
+        self.reset()
         self.publisher_.publish(msg)
 
 
