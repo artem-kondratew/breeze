@@ -14,7 +14,7 @@ drive_controller_serial:
 
 drive_controller:
     ros__parameters:
-        input_sub: /drive_controller_input                  # input topic
+        input_sub: /drive_controller/input                  # input topic
         serial_pub: /serial/drive_controller/pub            # topic with motors velocities values in rad/s
         serial_sub: /serial/drive_controller/sub            # topic with odometry poses in ticks and odometry velocities in rad/s
         cmd_size: 3                                         # cmd size
