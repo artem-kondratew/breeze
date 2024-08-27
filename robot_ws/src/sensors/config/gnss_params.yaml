@@ -3,3 +3,4 @@ gnss:
         output_topic: /gnss          # topic with gnss data
         active_topic: /gnss/active   # topic with true if node is active
         port: /dev/ttyUSB1           # gnss port
+        

@@ -75,8 +75,6 @@ class Locus(Thread):
         self.pitch = None
         self.yaw = None
 
-        self.yaw_offset = None
-
         self.x = None
         self.y = None
         self.z = None
@@ -192,22 +190,4 @@ class Locus(Thread):
         return -angle if angle < math.pi else 2 * math.pi - angle
 
     def get_yaw(self):
-        if self.yaw_offset == None:
-            return 0.0
-        return self.normalize_angle(self.yaw + self.yaw_offset)
-    
-    def set_yaw_offset(self, yaw_offset):
-        self.yaw_offset = yaw_offset
-
-    def spin(self):
-        while True:
-            print(test.get_yaw())
-            time.sleep(0.05)
-
-
-if __name__ == "__main__":
-    test = Locus('/dev/ttyUSB1')
-    test.start()
-    test.set_yaw_offset(0.0)
-    time.sleep(1)
-    test.spin()
+        return self.normalize_angle(self.yaw)

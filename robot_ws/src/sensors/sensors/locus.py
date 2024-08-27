@@ -1,0 +1,71 @@
+#!/usr/bin/env python3
+
+
+import math
+import rclpy
+import time
+from rclpy.node import Node
+from threading import Thread
+from std_msgs.msg import Bool
+from std_msgs.msg import Float64
+
+from .submodules.locus import Locus
+
+
+class LocusNode(Node):
+
+    def __init__(self) -> None:
+        super().__init__('locus')
+
+        self.declare_parameters(namespace='', parameters=[('output_topic', ''),
+                                                          ('active_topic', ''),
+                                                          ('locus_port', ''),])
+        self.output_topic = self.get_parameter('output_topic').value
+        self.active_topic = self.get_parameter('active_topic').value
+        self.locus_port = self.get_parameter('locus_port').value
+
+        self.get_logger().info(f'output_topic: {self.output_topic}')
+        self.get_logger().info(f'active_topic: {self.active_topic}')
+        self.get_logger().info(f'locus_port: {self.locus_port}')
+        
+        self.publisher = self.create_publisher(Float64, self.get_parameter('output_topic').value, 10)
+        self.active_publisher = self.create_publisher(Bool, self.get_parameter('active_topic').value, 10)
+
+        self.timer = self.create_timer(1.0, self.activeCallback)
+
+        self.locus = Locus(self.locus_port)
+        self.locus.start()
+        time.sleep(1)
+
+        self.thread = Thread(target=self.spin)
+        self.thread.start()
+
+        self.get_logger().info(f'initialized')
+
+    def activeCallback(self):
+        msg = Bool()
+        msg.data = True
+        self.active_publisher.publish(msg)
+
+    def publish_yaw(self, yaw):
+        msg = Float64()
+        msg.data = yaw
+        self.publisher.publish(msg)
+
+    def spin(self):
+        while rclpy.ok():
+            yaw = self.locus.get_yaw() * 180 / math.pi
+            self.publish_yaw(yaw)
+            self.get_logger().info(f'yaw = {yaw}')
+
+
+def main(args=None):
+    rclpy.init(args=args)
+    locus = LocusNode()
+    rclpy.spin(locus)
+    locus.destroy_node()
+    rclpy.shutdown()
+
+
+if __name__ == '__main__':
+    main()

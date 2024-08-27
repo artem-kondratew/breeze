@@ -1,0 +1,6 @@
+locus:
+    ros__parameters:
+        output_topic: /locus        # topic with magnetometer data
+        active_topic: /locus/active # true if node is active
+        locus_port: /dev/ttyS0      # locus port
+        alpha: 0.75                 # weight for EMA

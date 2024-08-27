@@ -26,7 +26,9 @@ setup(
     entry_points={
         'console_scripts': [
             'gnss = sensors.gnss:main',
-            'magnetometer = sensors.magnetometer:main'
+            'locus = sensors.locus:main',
+            'magnetometer = sensors.magnetometer:main',
+            'dispatcher = sensors.dispatcher:main',
         ],
     },
 )

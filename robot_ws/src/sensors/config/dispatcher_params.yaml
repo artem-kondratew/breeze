@@ -1,0 +1,7 @@
+sensors_dispatcher:
+    ros__parameters:
+        gnss_topic: /gnss                        # topic with gnss data
+        magnetometer_topic: /magnetometer        # topic with magnetometer data
+        locus_topic: /locus                      # topic with locus data
+        active_topic: /sensors_dispatcher/active # true if node is active
+        output_topic: /nav/input                 # lat, lon, yaw, dyaw

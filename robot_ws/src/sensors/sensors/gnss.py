@@ -8,7 +8,7 @@ from rclpy.node import Node
 from serial import Serial
 from threading import Thread
 
-from sensor_msgs.msg import NavSatFix
+from robot_msgs.msg import Gnss as GnssMsg
 from std_msgs.msg import Bool
 
 
@@ -29,7 +29,7 @@ class Gnss(Node):
         self.get_logger().info(f'active_topic: {self.service_topic}')
         self.get_logger().info(f'port: {self.port}')
         
-        self.publisher = self.create_publisher(NavSatFix, self.get_parameter('output_topic').value, 10)
+        self.publisher = self.create_publisher(GnssMsg, self.get_parameter('output_topic').value, 10)
         self.active_publisher = self.create_publisher(Bool, self.get_parameter('active_topic').value, 10)
 
         self.stream = Serial(self.port, 9600, timeout=3)
@@ -56,28 +56,36 @@ class Gnss(Node):
     def __delete__(self) -> None:
         self.stream.close()
 
-    def publishCoordinates(self):
-        msg = NavSatFix()
-        msg.header.stamp = self.get_clock().now().to_msg()
-        msg.header.frame_id = 'base_footprint'
-        msg.latitude = self.lat
-        msg.longitude = self.lon
+    def publishData(self):
+        msg = GnssMsg()
+        msg.gnss.header.stamp = self.get_clock().now().to_msg()
+        msg.gnss.header.frame_id = 'base_footprint'
+        msg.gnss.latitude = self.lat
+        msg.gnss.longitude = self.lon
+        msg.correct_cog.data = True if self.cog else False
+        msg.correct_vel.data = True if self.vel else False
+        msg.cog.data = self.cog if msg.correct_cog else 0.0
+        msg.vel.data = self.vel if msg.correct_vel else 0.0
         self.publisher.publish(msg)
 
     def parse(self):
-        while rclpy.ok():
-            try:
-                print('ok1')
-                for (_, parsed_data) in self.reader:
-                    print('ok2')
-                    if parsed_data.msgID == "RMC":
-                        self.lat, self.lon, self.cog = parsed_data.lat, parsed_data.lon, parsed_data.cog
-                        self.publishCoordinates()
-                        self.get_logger().info(f'latitude: {self.lat}, longitude: {self.lon}, cog: {self.cog}')
-                        self.file.write(f'{self.lat}, {self.lon}, {time.strftime("%c")}, {self.cnt}\n')
-            except:
-                self.stream = Serial(self.port, 9600, timeout=3)
-                print('REBOOT')
+        while True:
+            for (_, parsed_data) in self.reader:
+                if parsed_data == None:
+                    continue
+                if parsed_data.msgID == "RMC":
+                    lat, lon, self.cog, self.vel = parsed_data.lat, parsed_data.lon, parsed_data.cog, parsed_data.spd
+                    if not lat or not lon:
+                        continue
+                    self.lat = lat if self.lat == None else self.alpha * self.lat + (1.0 - self.alpha) * lat
+                    self.lon = lon if self.lon == None else self.alpha * self.lon + (1.0 - self.alpha) * lon
+                    self.publishData()
+                    self.get_logger().info(f'latitude: {self.lat}, longitude: {self.lon}, cog: {self.cog}')
+                    self.file.write(f'{self.lat}, {self.lon}, {time.strftime("%c")}, {self.cnt}\n')
+                    self.lat = None
+                    self.lon = None
+                    self.cog = None
+                    self.vel = None
             
 
 def main(args=None):

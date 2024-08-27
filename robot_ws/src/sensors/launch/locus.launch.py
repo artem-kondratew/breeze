@@ -11,15 +11,15 @@ def generate_launch_description():
 
     package_name = 'sensors'
     
-    parameters = [os.path.join(get_package_share_directory(package_name), 'config', 'magnetometer_params.yaml')]
+    parameters = [os.path.join(get_package_share_directory(package_name), 'config', 'locus_params.yaml')]
 
-    magnetometer = Node(
+    locus = Node(
         package=package_name,
-        executable='magnetometer',
+        executable='locus',
         parameters=[parameters],
         output='screen',
     )
 
     return LaunchDescription([
-        magnetometer,
+        locus,
     ])
