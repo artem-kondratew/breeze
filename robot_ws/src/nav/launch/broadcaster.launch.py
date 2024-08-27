@@ -13,13 +13,13 @@ def generate_launch_description():
     
     parameters = [os.path.join(get_package_share_directory(package_name), 'config', 'params.yaml')]
 
-    nav = Node(
+    broadcaster = Node(
         package=package_name,
-        executable='nav',
+        executable='broadcaster',
         parameters=[parameters],
         output='screen',
     )
 
     return LaunchDescription([
-        nav,
+        broadcaster
     ])
