@@ -24,7 +24,7 @@ ament_target_dependencies(broadcaster
 )
 
 install(DIRECTORY
-    include src launch config
+    src launch config
     DESTINATION share/${PROJECT_NAME}
 )
 
