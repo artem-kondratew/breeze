@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.8)
-project(nav)
+project(broadcaster)
 
 find_package(ament_cmake REQUIRED)
 find_package(geometry_msgs REQUIRED)
@@ -16,7 +16,7 @@ add_executable(broadcaster
 ament_target_dependencies(broadcaster
     geometry_msgs
     rclcpp
-    robot_msgs 
+    robot_msgs
     sensor_msgs
     std_msgs
     tf2

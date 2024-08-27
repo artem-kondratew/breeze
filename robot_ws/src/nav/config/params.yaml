@@ -1,7 +1,9 @@
-broadcaster:
+nav:
     ros__parameters:
-        gnss_topic: /gnss
-        magnetometer_topic: /magnetometer
-        active_topic: /broadcaster/active
-        map_frame: map
-        base_footprint_frame: base_footprint
+        data_topic: /nav/input
+        target_topic: /target
+        active_topic: /nav/active
+        vel_topic: /drive_controller/input
+        teleop_topic: /teleop
+        min_dist: 2.0
+        min_angle: 5.0

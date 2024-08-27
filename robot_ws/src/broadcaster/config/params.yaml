@@ -1,0 +1,7 @@
+broadcaster:
+    ros__parameters:
+        input_topic: /nav/input
+        gnss_topic: /broadcaster/gnss
+        active_topic: /broadcaster/active
+        map_frame: map
+        base_footprint_frame: base_footprint

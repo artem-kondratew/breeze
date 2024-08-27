@@ -9,7 +9,7 @@ from launch_ros.actions import Node
 
 def generate_launch_description():
 
-    package_name = 'nav'
+    package_name = 'broadcaster'
     
     parameters = [os.path.join(get_package_share_directory(package_name), 'config', 'params.yaml')]
 
