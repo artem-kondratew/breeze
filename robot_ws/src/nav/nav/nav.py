@@ -9,7 +9,7 @@ from std_msgs.msg import Bool
 class Nav(Node):
 
     def __init__(self):
-        super().__init__('gnss')
+        super().__init__('nav')
 
         self.declare_parameters(namespace='', parameters=[('data_topic', ''),
                                                           ('target_topic', ''),
@@ -32,8 +32,8 @@ class Nav(Node):
         self.get_logger().info(f'active_topic: {active_topic}')
         self.get_logger().info(f'vel_topic: {vel_topic}')
         self.get_logger().info(f'teleop_topic: {teleop_topic}')
-        self.get_logger().info(f'min_dist: {self.min_dist}')
-        self.get_logger().info(f'min_angle: {self.min_angle}')
+        self.get_logger().info(f'min_dist: {self.min_dist_}')
+        self.get_logger().info(f'min_angle: {self.min_angle_}')
 
         self.data_sub_ = self.create_subscription(NavData, data_topic, self.dataCallback, 10)
         self.target_sub_ = self.create_subscription(Target, target_topic, self.targetCallback, 10)
@@ -48,7 +48,7 @@ class Nav(Node):
         self.success_ = False
 
         target_data_ = Target()
-        target_data_.angle = 0
+        target_data_.angle = 0.0
         target_data_.gnss.latitude = 43.102647
         target_data_.gnss.longitude = 131.865785
         self.target_init_ = True
@@ -56,7 +56,7 @@ class Nav(Node):
         self.data_ = None
         self.target_data_ = None
 
-        self.teleop_ = False
+        self.teleop_ = True
 
         self.success_ = False
 
@@ -154,14 +154,14 @@ class Nav(Node):
         self.get_logger().info(f'SUCCESS')
 
     def navCallback(self):
-        if not self.data_init_:
-            self.get_logger().info(f'NO GNSS DATA')
-            return
-        if not self.target_init_:
-            self.get_logger().info(f'NO TARGET DATA')
-            return
         if self.teleop_:
             self.get_logger().info(f'TELEOP MODE')
+            return
+        if not self.data_:
+            self.get_logger().info(f'NO DATA')
+            return
+        if not self.target_init_:
+            self.get_logger().info(f'NO TARGET')
             return
 
         self.calcDist()

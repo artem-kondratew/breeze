@@ -79,7 +79,7 @@ void Broadcaster::inputCallback(const robot_msgs::msg::NavData& msg) {
     RCLCPP_INFO(this->get_logger(), "input");
     data_ = msg;
     data_init_ = true;
-    q_.setRPY(0, 0, -msg.yaw.data);
+    q_.setRPY(0, 0, -msg.yaw.data / 180.0 * M_PI);
     auto gnss_msg = msg.gnss;
     gnss_msg.header.stamp = this->get_clock()->now();
     gnss_pub_->publish(gnss_msg);
